@@ -543,7 +543,7 @@ static void nvme_assign_write_stream(struct nvme_ctrl *ctrl,
 	{
 		*control |= NVME_RW_DTYPE_STREAMS;
 		*dsmgmt |= streamid << 16;
-//		printk(KERN_NOTICE "nvme_assign_write_stream: streamid = %d, dsmgmt = 0x%X, control = 0x%X\n", streamid, *dsmgmt, *control);
+		printk(KERN_NOTICE "nvme_assign_write_stream: streamid = %d, dsmgmt = 0x%X, control = 0x%X\n", streamid, *dsmgmt, *control);
 		req->q->write_stream_id = streamid;
 	}
 }
