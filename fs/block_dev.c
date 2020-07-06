@@ -363,7 +363,6 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
 		bio->bi_private = dio;
 		bio->bi_end_io = blkdev_bio_end_io;
 		bio->bi_ioprio = iocb->ki_ioprio;
-//		printk(KERN_NOTICE "__blkdev_direct_IO: bio.bi_stream_id = %d\n", bio->bi_stream_id );
 
 		ret = bio_iov_iter_get_pages(bio, iter);
 		if (unlikely(ret)) {

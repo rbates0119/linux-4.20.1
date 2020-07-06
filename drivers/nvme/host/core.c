@@ -520,7 +520,7 @@ static void nvme_assign_write_stream(struct nvme_ctrl *ctrl,
 				     u32 *dsmgmt)
 {
 	enum rw_hint hint = req->write_hint;
-	unsigned short streamid = (u8)req->write_stream_id;
+	u64 streamid = req->write_stream_id;
 
 	if (hint > WRITE_LIFE_NOT_SET) {
 
@@ -535,11 +535,16 @@ static void nvme_assign_write_stream(struct nvme_ctrl *ctrl,
 			req->q->write_hints[hint] += blk_rq_bytes(req) >> 9;
 	}
 
+	if (streamid == 0)
+	{
+		streamid = req->q->write_stream_id;
+	}
 	if (streamid > 0)
 	{
 		*control |= NVME_RW_DTYPE_STREAMS;
 		*dsmgmt |= streamid << 16;
 //		printk(KERN_NOTICE "nvme_assign_write_stream: streamid = %d, dsmgmt = 0x%X, control = 0x%X\n", streamid, *dsmgmt, *control);
+		req->q->write_stream_id = streamid;
 	}
 }
 
@@ -651,6 +656,11 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
 	if (rq_data_dir(req))
 		blk_add_trace_msg(ns->queue, "off:%lld; len:%d; dtype:%d; nsid:%d",
 			cmnd->rw.slba, cmnd->rw.length+1, control>>4, cmnd->rw.nsid);
+
+//	if (req_op(req) == REQ_OP_WRITE && streams)
+//		printk(KERN_NOTICE "off:%lld; len:%d; dtype:%d; nsid:%d\n",
+//				cmnd->rw.slba, cmnd->rw.length+1, control>>4, cmnd->rw.nsid);
+
 	return 0;
 }
 
