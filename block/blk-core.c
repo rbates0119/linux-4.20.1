@@ -1976,7 +1976,10 @@ void blk_init_request_from_bio(struct request *req, struct bio *bio)
 		req->ioprio = ioc->ioprio;
 	else
 		req->ioprio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
+
 	req->write_hint = bio->bi_write_hint;
+	req->write_stream_id = bio->bi_stream_id;
+
 	blk_rq_bio_prep(req->q, req, bio);
 }
 EXPORT_SYMBOL_GPL(blk_init_request_from_bio);
