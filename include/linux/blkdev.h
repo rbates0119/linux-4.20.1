@@ -235,7 +235,7 @@ struct request {
 #endif
 
 	unsigned short write_hint;
-	unsigned short stream_id;
+	unsigned short write_stream_id;
 	unsigned short ioprio;
 
 	void *special;		/* opaque pointer available for LLD use */

@@ -519,19 +519,20 @@ static void nvme_assign_write_stream(struct nvme_ctrl *ctrl,
 				     struct request *req, u16 *control,
 				     u32 *dsmgmt)
 {
-	enum rw_hint streamid = req->write_hint;
+	enum rw_hint hint = req->write_hint;
+	unsigned short streamid = (u8)req->write_stream_id;
 
-	if (streamid == WRITE_LIFE_NOT_SET || streamid == WRITE_LIFE_NONE) {
+	if (hint > WRITE_LIFE_NOT_SET) {
 
-		streamid = (u16)req->stream_id;
+//		printk(KERN_NOTICE "nvme_assign_write_stream: hint = %d\n", hint);
 
-	} else {
-		streamid--;
+		streamid = 0;
+		hint--;
 		if (WARN_ON_ONCE(streamid > ctrl->nr_streams))
 			return;
 
-		if (streamid < ARRAY_SIZE(req->q->write_hints))
-			req->q->write_hints[streamid] += blk_rq_bytes(req) >> 9;
+		if (hint < ARRAY_SIZE(req->q->write_hints))
+			req->q->write_hints[hint] += blk_rq_bytes(req) >> 9;
 	}
 
 	if (streamid > 0)
@@ -2552,6 +2553,7 @@ static int nvme_dev_open(struct inode *inode, struct file *file)
 {
 	struct nvme_ctrl *ctrl =
 		container_of(inode->i_cdev, struct nvme_ctrl, cdev);
+
 
 	switch (ctrl->state) {
 	case NVME_CTRL_LIVE:
