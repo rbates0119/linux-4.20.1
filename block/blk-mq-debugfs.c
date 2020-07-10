@@ -210,6 +210,8 @@ static ssize_t queue_write_hint_store(void *data, const char __user *buf,
 	for (i = 0; i < BLK_MAX_WRITE_HINTS; i++)
 		q->write_hints[i] = 0;
 
+	q->write_stream_id = 0;
+
 	return count;
 }
 

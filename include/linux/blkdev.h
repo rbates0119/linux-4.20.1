@@ -235,7 +235,7 @@ struct request {
 #endif
 
 	unsigned short write_hint;
-	unsigned short write_stream_id;
+	unsigned write_stream_id;
 	unsigned short ioprio;
 
 	void *special;		/* opaque pointer available for LLD use */
@@ -681,6 +681,7 @@ struct request_queue {
 
 #define BLK_MAX_WRITE_HINTS	5
 	u64			write_hints[BLK_MAX_WRITE_HINTS];
+	u64			write_stream_id;
 };
 
 #define QUEUE_FLAG_QUEUED	0	/* uses generic tag queueing */
